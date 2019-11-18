@@ -16,8 +16,8 @@ pipeline {
         stage("create docker image") {
             steps {
                 echo " ============== start building image =================="
-                dir ('docker') {
-                	sh 'docker-compose up -d --build . '
+                dir ('docker/php') {
+                	sh 'docker build . '
                 }
             }
         }
