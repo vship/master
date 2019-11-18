@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo " ============== start building image =================="
                 dir ('docker/php') {
-                	sh 'docker build . '
+                	sh ' docker build . -t webdev && docker run -p 8000:80 -t webdev '
                 }
             }
         }
