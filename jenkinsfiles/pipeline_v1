@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo " ============== start building image =================="
                 dir ('docker/php') {
-                	sh ' docker build . -t webdev && docker run -d -p 8000:80 -t webdev '
+                	sh ' docker build . -t webdev && docker run --link sql:db -p 8000:80 -d -t webdev '
                 }
             }
         }
