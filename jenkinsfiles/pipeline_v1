@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo " ============== start building image =================="
                 dir ('docker/sql') {
-                	sh ' docker build . -t sql && docker run -d -p 3306:3306 --name sql '
+                	sh ' docker build . -t sql && docker run -d -p 3306:3306 -t sql '
                 }
             }
         }
