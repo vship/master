@@ -8,6 +8,6 @@ ENV MYSQL_USER: devuser
 ENV MYSQL_PASSWORD: devpass
 ENV MYSQL_ROOT_HOST '%'
 
-RUN echo "default-authentication-plugin=mysql_native_password" >> /ets/my.cnf
+RUN echo "default-authentication-plugin=mysql_native_password" >> /etc/my.cnf
 
 EXPOSE 3306
