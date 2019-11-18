@@ -13,7 +13,16 @@ pipeline {
     }
     stages {
         
-        stage("create docker image") {
+        stage("create docker image sql") {
+            steps {
+                echo " ============== start building image =================="
+                dir ('docker/sql') {
+                	sh ' docker build . -t sql && docker run -d -p 3306:3306 -t sql '
+                }
+            }
+        }
+        
+		stage("create docker image apache") {
             steps {
                 echo " ============== start building image =================="
                 dir ('docker/php') {
@@ -21,6 +30,6 @@ pipeline {
                 }
             }
         }
-        
+		
     }
 }
