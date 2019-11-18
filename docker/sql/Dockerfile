@@ -10,3 +10,4 @@ ENV MYSQL_PASSWORD: devpass
 # RUN echo "default-authentication-plugin=mysql_native_password" >> /etc/my.cnf
 
 EXPOSE 3306
+CMD ["mysqld"]
