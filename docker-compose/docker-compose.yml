@@ -6,7 +6,7 @@ services:
         dockerfile: Dockerfile
        container_name: php73
        depends_on:
-        - db
+        - sql
        volumes:
         - ./php:/var/www/html/
        ports:
