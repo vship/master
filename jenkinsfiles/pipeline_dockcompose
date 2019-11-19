@@ -15,7 +15,7 @@ pipeline {
 	    
 	stage("create docker-compose") {
            steps {
-                echo " ============== start building image sql ==============="
+                echo " ============= start building compose ==============="
                 dir ('docker-compose') {
                 	sh ' docker-compose -f docker-compose.yml up -d '
                 }
