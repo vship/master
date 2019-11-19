@@ -35,7 +35,7 @@ pipeline {
             steps {
                 echo " ============== start building image web =============="
                 dir ('docker/php') {
-                	sh ' docker build . -t webdev && docker run --name web --net=webnet -p8000:80 -d -t web '
+                	sh ' docker build . -t web && docker run --name web --net=webnet -p8000:80 -d -t web '
                 }
             }
         }
