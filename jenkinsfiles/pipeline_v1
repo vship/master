@@ -6,7 +6,7 @@ pipeline {
     agent { 
         label 'master'
         }
-    triggers { pollSCM('* * * * *') }
+    //triggers { pollSCM('* * * * *') }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
@@ -15,18 +15,18 @@ pipeline {
         
         stage("create docker image sql") {
             steps {
-                echo " ============== start building image =================="
+                echo " ============== start building image sql ==============="
                 dir ('docker/sql') {
-                	sh ' docker build . -t sql && docker run --name sql -p 3306:3306 -d -t sql '
+                	sh ' docker build . -t sql && docker run --name sql -p3306:3306 -d -t sql '
                 }
             }
         }
         
 		stage("create docker image apache") {
             steps {
-                echo " ============== start building image =================="
+                echo " ============== start building image web =============="
                 dir ('docker/php') {
-                	sh ' docker build . -t webdev && docker run --link sql:db -p 8000:80 -d -t webdev '
+                	sh ' docker build . -t webdev && docker run --name webdev -p8000:80 -d -t webdev '
                 }
             }
         }
