@@ -13,11 +13,11 @@ pipeline {
     }
     stages {
 	    
-	stage("create docker network") {
+	stage("create docker-compose") {
            steps {
                 echo " ============== start building image sql ==============="
                 dir ('docker-compose') {
-                	sh ' docker-compose -f docker-compose.yml up '
+                	sh ' docker-compose -f docker-compose.yml up -d '
                 }
             }
         }
