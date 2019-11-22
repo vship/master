@@ -9,6 +9,8 @@ services:
         - sql
        volumes:
         - ./php:/var/www/html/
+          #       ports:
+          #        - 8000:80
   sql:
        container_name: mysql8
        image: mysql:8.0
@@ -28,8 +30,10 @@ services:
         - content_nginx:/usr/share/nginx/html/
         - conf_nginx:/etc/nginx/
        ports:
-        - 8000:80
+        - 8080:80
         - 443:443
+       depends_on:
+        - web
 volumes:
   content_nginx:
   conf_nginx:
