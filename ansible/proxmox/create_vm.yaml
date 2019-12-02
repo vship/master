@@ -1,7 +1,7 @@
 - name: Initial setup VM
   hosts: localhost
   vars_files:
-    - vms.yml
+    - vms.yaml
   tasks:
     - name: Clone VMs
       proxmox_kvm:
