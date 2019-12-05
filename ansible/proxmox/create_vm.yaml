@@ -13,17 +13,17 @@
         api_host: "{{ api_host }}"
         clone: "{{ clone_vm }}"
         full: yes
-      loop: "{{ lookup('dict', vms) }}"
+      loop: "{{ lookup('dict', vms, wantlist=True) }}"
 
     - name: Set IP addresses
       command: "qm set {{ item.value.vmid }}  --ipconfig0 ip={{ item.value.ipaddress }}"
-      loop: "{{ lookup('dict', vms) }}"
+      loop: "{{ lookup('dict', vms, wantlist=True) }}"
 
     - name: Copy SSH key
       command: "qm set {{ item.value.vmid }} --sshkey {{ key_name }}"
       args:
         chdir: /tmp
-      loop: "{{ lookup('dict', vms) }}"
+      loop: "{{ lookup('dict', vms, wantlist=True) }}"
 
     - name: Update VMs
       proxmox_kvm:
@@ -37,7 +37,7 @@
         vmid:         "{{ item.value.vmid }}"
         node:         "{{ node }}"
         name:         "{{ item.value.name }}"
-      loop: "{{ lookup('dict', vms) }}"
+      loop: "{{ lookup('dict', vms, wantlist=True) }}"
 
     - name: Start VMs
       proxmox_kvm:
@@ -47,4 +47,4 @@
         vmid:         "{{ item.value.vmid }}"
         node:         "{{ node }}"
         state:        started
-      loop: "{{ lookup('dict', vms) }}"
+      loop: "{{ lookup('dict', vms, wantlist=True) }}"
