@@ -1,0 +1,53 @@
+Kubernetes+gitlab ci
+
+Для начала надо установить gitlab ci и тестовый кластер microk8s
+Я для тестирование сделал это на отдельных виртуальных серверах с CentOS 7
+На Gitlab CI после установки включаем container registry для хранения образов. Адрес для registry можно оставить http, 
+но сам gitlab должен работать на https. Если используете самоподписанный сертификат то:
+На Microk8s адрес registry надо внести в файл containerd-template.toml:
+#Добавляем адрес
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registryname"]
+        endpoint = ["http://registryname", ]
+#Отключаем проверку сертификата
+	[plugin."io.containerd.grpc.v1.cri".registry.configs."registryname".tls]
+        insecure_skip_verify = true 
+
+На сервере с gitlab runner от имени польвателя gitlab-runner можно ввести команду которая так же отключить проверку сертификата:
+git config --global http.sslVerify false
+
+ 
+После установки Mikrok8s включаем дашборд и пробрасываем его наружу. Мануалов в сети много, вот один из них:
+https://dev.to/duplys/installing-kubernetes-dashboard-for-microk8s-on-a-raspberry-pi-cluster-58hb
+
+Так же лучше заранее открыть порты на сервере с microk8s
+firewall-cmd --zone=public --permanent --add-service=http
+firewall-cmd --zone=public --permanent --add-service=https
+firewall-cmd --reload
+
+После подготовки можно сделаем образ нашего "приложения" и запушим его на гитлаб в наш проект.
+docker login $container_registry
+docker build --pull -t $container_registry/name/project/app:latest .
+docker push $container_registry/name/project/app:latest
+Проверим что на гитлабе появился образ.
+
+Теперь сделаем secret на microk8s для доступа к нашему container registry.
+microk8s kubectl create secret docker-registry gitlab-auth --docker-server=http://registryname --docker-username=user --docker-password=password --docker-email=email
+После этого запустим деплоймент, сервис, ингресс на microk8s.
+Все yaml для этого закинем на сервер и запустим
+kubectl apply -f deploy_app.yaml
+kubectl apply -f service_app.yaml
+kubectl apply -f ingress.yaml
+
+Проверим что всё ок, зайдем на http://адрес сервера/py
+
+Теперь осталось немного это всё автоматизировать, добавим в наш репозиторий файл .gitlab-ci.yml
+Этот pipeline запускат сборку образа после изменений в коде приложения и по ssh перезапускает deployment
+SSH перезапуск не совсем хорошее решение, но для тестов вполне подойдет. Я заранее сделал доступ по ключу пользователю gitlab-runner к 
+серверу с microk8s.
+Так же не забудьте добавить переменные в проект с именем и токеном для gitlab-runner
+
+TODO
+Сделать более правильный перезапуск деплоймента.
+Сделать в CICD первоначальный запуск деплоймента, сервиса, ингресса.
+Внедрить тестирование образа и кода приложения.
+Дополнить CICD для тестирование других веток.

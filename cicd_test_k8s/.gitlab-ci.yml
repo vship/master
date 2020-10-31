@@ -1,0 +1,27 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - docker login container_registry -u $name_runner -p $token_runner
+
+build:
+  stage: build
+  only:
+    changes:
+     - flask_app/*
+  tags:
+    - docker
+  script:
+    - docker build --pull -t container_registry/app:latest .
+    - docker push container_registry/app:latest
+    
+deploy:
+  stage: deploy
+  only:
+    changes:
+     - flask_app/*
+  tags:
+    - docker
+  script:
+    - ssh user@server 'microk8s kubectl rollout restart deployment app-deploy'
